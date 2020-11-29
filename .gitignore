@@ -1,2 +1,5 @@
 # omit datasets
 *.csv
+*.corpus
+
+**.ipynb_checkpoints
