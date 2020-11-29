@@ -48,7 +48,7 @@ After we find the sentence with the maximum average return, we discard that sent
 
 We have successfully found the best order of sentences to converge with the ideal vocabulary expansion curve.
 
-![](/home/efe/Documents/personal/coding-fun/coursemaker/coursemaker/media/vcc_comparison.png)
+![](./media/vcc_comparison.png)
 
 ## Application areas
 
