@@ -13,6 +13,9 @@ pre_tokenization_replace = []
 path = ""
 out_path = ""
 start_string = ""
+token_alphabet = "latin"
+token_regex = "[a-z]+"
+
 
 for i, argument in enumerate(argument_list):
 
@@ -27,6 +30,11 @@ for i, argument in enumerate(argument_list):
         
     elif argument == "-s":
         start_string = argument_list[i+1]
+        
+    elif argument == "--alphabet":
+        token_alphabet = argument_list[i+1]
+        if token_alphabet == "cyrillic":
+            token_regex = "[а-я]+"
         
 if not (path and out_path):
     #print(bool(in_path),bool(out_path),column_name)
@@ -98,7 +106,7 @@ startindex = corpus.index(start_string)
 sentences  = re.split('\.|\?|\!', corpus[startindex:])
 
 words      = normalize(corpus, stopword_removal=False)[startindex:].split(' ')
-words      = [ word for word in words if re.match('[a-z]+', word) ]
+words      = [ word for word in words if re.match(token_regex, word) ]
     
 unique_words, counts_words = np.unique(words, return_counts=True)
 

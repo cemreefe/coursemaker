@@ -12,6 +12,8 @@ out_path = ""
 column_name = ""
 freq_path = ""
 sentence_count = 0
+consider_sentence_limit = 0
+min_sentence_length = 5
 
 for i, argument in enumerate(argument_list):
 
@@ -30,6 +32,12 @@ for i, argument in enumerate(argument_list):
     elif argument == "-sc":
         sentence_count = eval(argument_list[i+1])
         
+    elif argument == "-csl":
+        consider_sentence_limit = eval(argument_list[i+1])
+        
+    elif argument == "-msl":
+        min_sentence_length = eval(argument_list[i+1])
+        
 if not (in_path and out_path and column_name and sentence_count and freq_path):
     #print(bool(in_path),bool(out_path),column_name)
     print("""
@@ -38,14 +46,22 @@ if not (in_path and out_path and column_name and sentence_count and freq_path):
     -o:\toutput csv file for sorted sentences
     -col:\tname of the column containing sentences in the input csv file
     -sc:\tnumber of sentences to return, default (-1 for max)
+    -csl:\tnumber of considered sentences in the corpus
+    -msl:\tminimum sentence length for consideration
     """)
     sys.exit()
         
         
+
+        
 df_s        = pd.read_csv(in_path)
 
 sentences   = list(df_s[column_name])
-sentences   = [ str(sentence) for sentence in sentences ]
+sentences   = [ str(sentence) for sentence in sentences if str(sentence) != "nan" ]
+
+consider_sentence_limit = consider_sentence_limit if consider_sentence_limit else len(sentences) 
+
+sentences   = sentences[:consider_sentence_limit]
 
 df_f        = pd.read_csv(freq_path)
 
@@ -60,6 +76,7 @@ freqs_cumulative = [0]
 for freq in frequencies[:,1].astype(int):
     freqs_cumulative.append(freqs_cumulative[-1] + freq)
     
+    
 wcount = freqs_cumulative[-1]
 
 
@@ -67,10 +84,15 @@ def sentences_to_feature(sentences, feature, frequencies):
     all_orders = []
     
     freq_list = list(frequencies[:,0])
+    freq_dict = {}
+    for i, word in enumerate(freq_list):
+        freq_dict[word] = i
+        
+    freq_set = set(freq_list)
     
     if feature == 'orders':
         for sentence in sentences:
-            sentence_orders = [ freq_list.index(word) for word in sentence.split(' ') if word in freq_list]
+            sentence_orders = [ freq_dict[word] for word in sentence.split(' ') if word in freq_set]
             all_orders.append(sentence_orders)
         
         return all_orders
@@ -78,13 +100,13 @@ def sentences_to_feature(sentences, feature, frequencies):
     if feature == 'frequencies':
         freqs = np.array(frequencies[:,1]).astype(float)/wcount
         for sentence in sentences:
-            sentence_orders = [ freqs[freq_list.index(word)] for word in sentence.split(' ') if word in freq_list]
+            sentence_orders = [ freqs[freq_dict[word]] for word in sentence.split(' ') if word in freq_set]
             all_orders.append(sentence_orders)
         
         return all_orders
 
 
-sentence_frequencies = sentences_to_feature(list(sentences), 'frequencies', frequencies)
+sentence_frequencies = sentences_to_feature(sentences, 'frequencies', frequencies)
 
 
 # get ideal sentence with most average vocab coverage return
@@ -92,10 +114,10 @@ def get_ideal_index(sentences, frequencies):
     
     xfrequencies = np.copy(frequencies)
     
-    xwords       = list(xfrequencies[:,0])
+    xwords       = set(xfrequencies[:,0])
 
-    xsentences = [' '.join([token for token in list(set(sentence.split(' '))) if token in xwords ]) for sentence in sentences ]
-    xsentence_frequencies = sentences_to_feature(list(xsentences), 'frequencies', frequencies)
+    xsentences = [' '.join([token for token in set(sentence.split(' ')) if token in xwords ]) for sentence in sentences ]
+    xsentence_frequencies = sentences_to_feature(xsentences, 'frequencies', frequencies)
 
     sums = [ np.sum(xsf)/len(xsf) if xsf != [] else 0 for xsf in xsentence_frequencies ]
 
@@ -108,14 +130,14 @@ def get_in_order(sentences, frequencies, sentence_count=20, metric="vanilla"):
     
     sentences_ordered = []
 
-    remaining_sentences   = [ sentence for sentence in set(sentences.copy()) if len(sentence)>5 ]
+    remaining_sentences   = [ sentence for sentence in set(sentences.copy()) if len(sentence)>min_sentence_length ]
     remaining_frequencies = np.copy(frequencies)
 
     print(len(remaining_sentences), len(remaining_frequencies))
     
     cumulative_return = 0
 
-    vocab = []
+    vocab = set()
     learning_history = [0]
 
     for i in range(sentence_count):
@@ -142,7 +164,7 @@ def get_in_order(sentences, frequencies, sentence_count=20, metric="vanilla"):
         orders   = sentences_to_feature(list([filtered]), 'orders', remaining_frequencies)
         sfreqs   = sentences_to_feature(list([filtered]), 'frequencies', remaining_frequencies)
 
-        vocab   += newvocab
+        vocab.update(newvocab)
 
         new_percentage = 100*np.sum(sfreqs) if sfreqs else 0
         cumulative_return += new_percentage
