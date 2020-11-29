@@ -17,9 +17,9 @@ I chose `A Tale of Two Cities`  as a corpora while conducting my experiments. I 
 
 The `preprocess_corpus.py`  script extracts sentences from a corpus and saves them in a CSV format in their original order. It also saves the words and their counts as a CSV file.  
 
->     -i: input text file containing the corpus
->     -o: output csv file for sentences
->     -s: (optional) the starting string for the corpus in the file (to skip through some initial parts)
+>         -i:	input text file containing the corpus
+>         -o:	output csv file for sentences
+>         -s:	(optional) the starting string for the corpus in the file (to skip through some initial parts)
 
 `python3 preprocess_corpus.py -i data/corpus/twocities.corpus -o data/csv/twocities -ptc "[('mr.','mr'),('mrs.','mrs')]" -s 'the footsteps'`
 
@@ -34,15 +34,15 @@ I tried out many different approaches, out of which I found one to converge with
 
 After we find the sentence with the maximum average return, we discard that sentence from our sentence list, and we discard every word used in the sentence from our dictionary. We then continue to the next step where we do it all over again with the current sentences and dictionary. 
 
->     -is:        input csv file containing sentences
->     -if:        input csv file containing frequencies
->     -o: 		output csv file for sorted sentences
->     -col:       name of the column containing sentences in the input csv file
->     -sc:        number of sentences to return, default (-1 for max)
+>         -is:	input csv file containing sentences
+>         -if:	input csv file containing frequencies
+>         -o:		output csv file for sorted sentences
+>         -col:	name of the column containing sentences in the input csv file
+>         -sc:	number of sentences to return, default (-1 for max)
+>         -csl:	number of considered sentences in the corpus (default all)
+>         -msl:	minimum sentence length for consideration (default 5)
 
-`sort_sentences.py -is data/csv/twocities.csv -if data/csv/twocities_freqs.csv -o out_twocities -col sentence -sc 100`
-
-(The current code is not optimized and really inefficient as of 2020/11/29) 
+`sort_sentences.py -is data/csv/twocities.csv -if data/csv/twocities_freqs.csv -o out_twocities -col sentence -sc 100` 
 
 ### The results
 
