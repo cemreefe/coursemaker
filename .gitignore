@@ -1,5 +1,14 @@
 # omit datasets
 *.csv
 *.corpus
+*.txt
 
+# omit output courses
+#courses/*
+
+
+# omit notebook checkpoints
 **.ipynb_checkpoints
+
+# omit notebooks folder while we're at it
+notebooks/*

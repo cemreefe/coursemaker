@@ -15,7 +15,8 @@ out_path = ""
 start_string = ""
 token_alphabet = "latin"
 token_regex = "[a-z]+"
-
+stemming = ""
+stem = False
 
 for i, argument in enumerate(argument_list):
 
@@ -31,10 +32,14 @@ for i, argument in enumerate(argument_list):
     elif argument == "-s":
         start_string = argument_list[i+1]
         
-    elif argument == "--alphabet":
+    elif argument == "--alphabet" or argument == "-a":
         token_alphabet = argument_list[i+1]
         if token_alphabet == "cyrillic":
             token_regex = "[а-я]+"
+            
+    elif argument == "--stemming":
+        stem = True
+        stemming = argument_list[i+1]
         
 if not (path and out_path):
     #print(bool(in_path),bool(out_path),column_name)
@@ -42,6 +47,7 @@ if not (path and out_path):
     -i:\tinput text file containing the corpus
     -o:\toutput csv file for sentences
     -s:\t(optional) the starting string for the corpus in the file (to skip through some initial parts)
+    -a:\t(optional) alphabet, default 'latin', supports 'cyrillic'.
     """)
     sys.exit()
 
@@ -51,9 +57,24 @@ def readfile(path):
     f = open(path, 'r')
     c = f.read()
     return c
+    
+if stemming and stemming == 'ru':
+    from lib.stemmers.ru_stemmer import stemmer
+    def get_stems(sentence):
+        sentence = stemmer.cleaning(sentence)
+        sentence = stemmer.stemming(sentence)
+        return sentence
+        
+else:
+    def get_stems(sentence):
+        return sentence
 
 # normalize a string
-def normalize(s, case_folding=True, stopword_removal=True, punctuation_removal=True, newline_removal=True, punctuation_whitelist=[]):
+def normalize(s, case_folding=True, stopword_removal=True, punctuation_removal=True, newline_removal=True, punctuation_whitelist=[], stem=False):
+
+    if stem:
+        s = get_stems(s)
+
 
     if not s:
         return None
@@ -105,7 +126,7 @@ startindex = corpus.index(start_string)
 
 sentences  = re.split('\.|\?|\!', corpus[startindex:])
 
-words      = normalize(corpus, stopword_removal=False)[startindex:].split(' ')
+words      = normalize(corpus, stopword_removal=False, stem=stem)[startindex:].split(' ')
 words      = [ word for word in words if re.match(token_regex, word) ]
     
 unique_words, counts_words = np.unique(words, return_counts=True)

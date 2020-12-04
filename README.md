@@ -17,11 +17,13 @@ I chose `A Tale of Two Cities`  as a corpora while conducting my experiments. I 
 
 The `preprocess_corpus.py`  script extracts sentences from a corpus and saves them in a CSV format in their original order. It also saves the words and their counts as a CSV file.  
 
->         -i:	input text file containing the corpus
->         -o:	output csv file for sentences
->         -s:	(optional) the starting string for the corpus in the file (to skip through some initial parts)
+>                 -i:	input text file containing the corpus
+>                 -o:	output csv file for sentences
+>                 -s:	(optional) the starting string for the corpus in the file (to skip through some initial parts)
+>                 -a:	(optional) alphabet, default 'latin', supports 'cyrillic'.
 
-`python3 preprocess_corpus.py -i data/corpus/twocities.corpus -o data/csv/twocities -ptc "[('mr.','mr'),('mrs.','mrs')]" -s 'the footsteps'`
+i.e.:
+`python3 preprocess_corpus.py -i data/corpus/ru_books.corpus -o data/csv/ru_books -ptc "[('mr.','mr'),('mrs.','mrs')]" -s 'the footsteps'`
 
 ## Sorting the sentences
 
@@ -34,15 +36,23 @@ I tried out many different approaches, out of which I found one to converge with
 
 After we find the sentence with the maximum average return, we discard that sentence from our sentence list, and we discard every word used in the sentence from our dictionary. We then continue to the next step where we do it all over again with the current sentences and dictionary. 
 
->         -is:	input csv file containing sentences
->         -if:	input csv file containing frequencies
->         -o:		output csv file for sorted sentences
->         -col:	name of the column containing sentences in the input csv file
->         -sc:	number of sentences to return, default (-1 for max)
->         -csl:	number of considered sentences in the corpus (default all)
->         -msl:	minimum sentence length for consideration (default 5)
+>                 -is: 	*(--input_sentences) input csv file containing sentences
+>                 -if: 	*(--input_frequencies) input csv file containing frequencies
+>                 -o:  	*(--out) output csv file for sorted sentences
+>                 -col:	 (--sentence_column) name of the column containing sentences in the input csv file (default 'sentence')
+>                 -sc: 	 (--sentence_count) number of sentences to return, default (-1 for max, 20 default)
+>                 -csl:	 (--consider_n_sentences) number of considered sentences in the corpus
+>                 -msl:	 (--min_sentence_length) minimum sentence length for consideration
+>                 -d:  	 (--dictionary) dictionary file, if not used, translations won't be written
+>                      	 expected cols: 'word', 'translation'
+>                 -s:  	 (--stemming) stemming language, default none, available: ru
+>                 
+>                 *: required
 
-`sort_sentences.py -is data/csv/twocities.csv -if data/csv/twocities_freqs.csv -o out_twocities -col sentence -sc 100` 
+i.e.:
+`python3 sort_sentences.py -is data/csv/ru_books.csv -if data/csv/ru_books_freqs.csv -o out/ru_books -col sentence -sc 100` 
+
+yields 100 best sentences to maximize vocabulary coverage with the minimum number of words learned.
 
 ### The results
 
@@ -50,19 +60,48 @@ We have successfully found the best order of sentences to converge with the idea
 
 ![](./media/vcc_comparison.png)
 
+
+
 ## Application areas
 
 I had this idea while thinking about automating the task of creating a language course. While this idea does not take into consideration the following factors:
 
-* Stemming
+* ~~Stemming~~
 * Grammar
 * Topic-Attentive Ordering
 
 It provides a good baseline for future work.
 
+
+
+## We could make a course out of this!
+
+So we will do just that. For now, `coursemaker` courses give no grammar explanation, or give no translation for the target sentence. However, using our scripts' capabilities to the maximum we can get a somewhat decent course material.
+
+Let's run `formatter.py` with the following command:
+
+`python3 formatter.py -i out/ru_books.csv -l russian -f html`
+
+Keep in mind that formatter takes these arguments:
+
+>    -i:  	*(--input) input csv file containing sentences
+>    -l:  	*(--language) name of the corpus's language
+>    -o:  	 (--output) path for formatted output file
+>    -f:  	 (--format) output format (default: 'md')
+>         	  > available: 'md', 'html'
+>         	  > future work: 'latex'
+>    
+>    *: required
+
+You can check out an example output from [this example russian material](.courses/russian_course.html).
+
+
+
 ## Future work
 
-The most immediate factor to consider as a future work for this project would be **stemming**. While this approach works better in English which has relatively low usage of affixes/infixes/suffixes, for a language like Turkish, Hungarian or Finnish, the word count process would perform poorly.
+~~The most immediate factor to consider as a future work for this project would be **stemming**. While this approach works better in English which has relatively low usage of affixes/infixes/suffixes, for a language like Turkish, Hungarian or Finnish, the word count process would perform poorly.~~
+
+Update: stemming is now available, with limited support. For now the only supported language is Russian.
 
 
 
