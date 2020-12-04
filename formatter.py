@@ -126,13 +126,22 @@ def htmlify_course(pts, language_name=language_name, repo_url=repo_url):
             .percentage {
                 list-style-type:none;
             }
+            .block {
+                /*background-color: blue;*/
+            }
+            @media print {
+               .block {page-break-inside: avoid;}
+            }
         </style>
     </head>
-    <body>
     """
+    formatted += "<body>"
+
     formatted += f"<h1>{title}</h1>\n\n<p>{description}</p>\n<br><hr>"
 
     for i, pt in enumerate(pts):
+
+        formatted += "<div class='block'>"
         
         percentage, \
         sentence,   \
@@ -154,6 +163,8 @@ def htmlify_course(pts, language_name=language_name, repo_url=repo_url):
         formatted += f'<li class="percentage"><small>{percentage:05.2f}%</small></li>\n'
         formatted += '</ul>\n'
         formatted += '<br>'
+
+        formatted += "</div>"
 
     formatted += '</body>'
 
