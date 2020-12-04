@@ -113,7 +113,7 @@ We will get a page similar to the following, in a printable `html` file.
 
 ![](./media/example_html.png)
 
-You can check out an example output from [this example russian material md](./courses/russian_course.md).
+You can check out [this example md](./courses/russian_course.md), or [this example html](https://blog.cemre.in/projects/russian_course.html).
 
 
 
