@@ -17,10 +17,12 @@ I chose `A Tale of Two Cities`  as a corpora while conducting my experiments. I 
 
 The `preprocess_corpus.py`  script extracts sentences from a corpus and saves them in a CSV format in their original order. It also saves the words and their counts as a CSV file.  
 
->                 -i:	input text file containing the corpus
->                 -o:	output csv file for sentences
->                 -s:	(optional) the starting string for the corpus in the file (to skip through some initial parts)
->                 -a:	(optional) alphabet, default 'latin', supports 'cyrillic'.
+>                     -i:  	input text file containing the corpus
+>                     -o:  	output csv file for sentences
+>                     -s:  	(optional) the starting string for the corpus in the file (to skip through some initial parts)
+>                     -a:  	(optional) alphabet, default 'latin', supports 'cyrillic'.
+>                     -ptc:	(optional) pre-tokenization replace. to replace certain substrings 
+>                          	 > example: "[('mr.', 'mr'),('mrs.', 'mrs')]" to avoid sentence separation on the dots.
 
 i.e.:
 `python3 preprocess_corpus.py -i data/corpus/ru_books.corpus -o data/csv/ru_books -ptc "[('mr.','mr'),('mrs.','mrs')]" -s 'the footsteps'`
@@ -36,21 +38,21 @@ I tried out many different approaches, out of which I found one to converge with
 
 After we find the sentence with the maximum average return, we discard that sentence from our sentence list, and we discard every word used in the sentence from our dictionary. We then continue to the next step where we do it all over again with the current sentences and dictionary. 
 
->                 -is: 	*(--input_sentences) input csv file containing sentences
->                 -if: 	*(--input_frequencies) input csv file containing frequencies
->                 -o:  	*(--out) output csv file for sorted sentences
->                 -col:	 (--sentence_column) name of the column containing sentences in the input csv file (default 'sentence')
->                 -sc: 	 (--sentence_count) number of sentences to return, default (-1 for max, 20 default)
->                 -csl:	 (--consider_n_sentences) number of considered sentences in the corpus
->                 -msl:	 (--min_sentence_length) minimum sentence length for consideration
->                 -d:  	 (--dictionary) dictionary file, if not used, translations won't be written
->                      	 expected cols: 'word', 'translation'
->                 -s:  	 (--stemming) stemming language, default none, available: ru
->                 
->                 *: required
+>                     -is: 	*(--input_sentences) input csv file containing sentences
+>                     -if: 	*(--input_frequencies) input csv file containing frequencies
+>                     -o:  	*(--out) output csv file for sorted sentences
+>                     -col:	 (--sentence_column) name of the column containing sentences in the input csv file (default 'sentence')
+>                     -sc: 	 (--sentence_count) number of sentences to return, default (-1 for max, 20 default)
+>                     -csl:	 (--consider_n_sentences) number of considered sentences in the corpus
+>                     -msl:	 (--min_sentence_length) minimum sentence length for consideration
+>                     -d:  	 (--dictionary) dictionary file, if not used, translations won't be written
+>                          	 expected cols: 'word', 'translation'
+>                     -s:  	 (--stemming) stemming language, default none, available: ru
+>                     
+>                     *: required
 
 i.e.:
-`python3 sort_sentences.py -is data/csv/ru_books.csv -if data/csv/ru_books_freqs.csv -o out/ru_books -col sentence -sc 100` 
+`python3 sort_sentences.py -is data/csv/ru_books.csv -if data/csv/ru_books_freqs.csv -o out/ru_books -col sentence -sc 1000` 
 
 yields 100 best sentences to maximize vocabulary coverage with the minimum number of words learned.
 
@@ -66,9 +68,8 @@ We have successfully found the best order of sentences to converge with the idea
 
 I had this idea while thinking about automating the task of creating a language course. While this idea does not take into consideration the following factors:
 
-* ~~Stemming~~
 * Grammar
-* Topic-Attentive Ordering
+* Topic-Attentive Ordering (Separation into units)
 
 It provides a good baseline for future work.
 
@@ -84,42 +85,26 @@ Let's run `formatter.py` with the following command:
 
 Keep in mind that formatter takes these arguments:
 
->    -i:  	*(--input) input csv file containing sentences
->    -l:  	*(--language) name of the corpus's language
->    -o:  	 (--output) path for formatted output file
->    -f:  	 (--format) output format (default: 'md')
->         	  > available: 'md', 'html'
->         	  > future work: 'latex'
->    
->    *: required
-
-You can check out an example output from [this example russian material](.courses/russian_course.html).
+>        -i:  	*(--input) input csv file containing sentences
+>        -l:  	*(--language) name of the corpus's language
+>        -o:  	 (--output) path for formatted output file
+>        -f:  	 (--format) output format (default: 'md')
+>             	  > available: 'md', 'html'
+>             	  > future work: 'latex'
+>        
+>        *: required
 
 
+
+We will get a page similar to the following, in a printable `html` file.
+
+![](./media/example_html.png)
+
+You can check out an example output from [this example russian material md](.courses/russian_course.md).
 
 ## Future work
 
-~~The most immediate factor to consider as a future work for this project would be **stemming**. While this approach works better in English which has relatively low usage of affixes/infixes/suffixes, for a language like Turkish, Hungarian or Finnish, the word count process would perform poorly.~~
-
-Update: stemming is now available, with limited support. For now the only supported language is Russian.
+Translations of whole sentences would be a nice addition to this project to provide a more complete learning experience. I'm planning to use the Google Translate workaround method from another project I made a year ago. 
 
 
 
-## More Word Statistics 
-
-*src. : @thevenuehouse on reddit (on an Indonesian corpus)*
-
-A few interesting learnings:
-
-- The top word 'yang', meaning 'that' or 'which' makes up 3% of all usage.
-
-- Top 10 most common = 18% of all usage
-
-- Top 100 most common = 50% of all usage
-
-- Getting from 0% to 50% understanding of vocabulary means learning just 100 words. Getting from 50% to 98% means learning 9900.
-
-  ...
-
-- This indicates the road from intermediate to fluent is much more difficult than novice to intermediate.
-  ...

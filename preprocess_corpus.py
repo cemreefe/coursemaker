@@ -44,10 +44,12 @@ for i, argument in enumerate(argument_list):
 if not (path and out_path):
     #print(bool(in_path),bool(out_path),column_name)
     print("""
-    -i:\tinput text file containing the corpus
-    -o:\toutput csv file for sentences
-    -s:\t(optional) the starting string for the corpus in the file (to skip through some initial parts)
-    -a:\t(optional) alphabet, default 'latin', supports 'cyrillic'.
+    -i:  \tinput text file containing the corpus
+    -o:  \toutput csv file for sentences
+    -s:  \t(optional) the starting string for the corpus in the file (to skip through some initial parts)
+    -a:  \t(optional) alphabet, default 'latin', supports 'cyrillic'.
+    -ptc:\t(optional) pre-tokenization replace. to replace certain substrings 
+         \t > example: "[('mr.', 'mr'),('mrs.', 'mrs')]" to avoid sentence separation on the dots.
     """)
     sys.exit()
 
