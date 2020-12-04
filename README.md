@@ -17,14 +17,13 @@ I chose `A Tale of Two Cities`  as a corpora while conducting my experiments. I 
 
 The `preprocess_corpus.py`  script extracts sentences from a corpus and saves them in a CSV format in their original order. It also saves the words and their counts as a CSV file.  
 
->                     -i:  	input text file containing the corpus
->                     -o:  	output csv file for sentences
->                     -s:  	(optional) the starting string for the corpus in the file (to skip through some initial parts)
->                     -a:  	(optional) alphabet, default 'latin', supports 'cyrillic'.
->                     -stm:	(optional) apply stemming while processing tokens. Supports 'ru' (Russian).
->                     -ptc:	(optional) pre-tokenization replace. to replace certain substrings 
->                     > example: "[('mr.', 'mr'),('mrs.', 'mrs')]" to avoid sentence separation on the dots.
->                     
+>      -i:  	input text file containing the corpus
+>      -o:  	output csv file for sentences
+>      -s:  	(optional) the starting string for the corpus in the file (to skip through some initial parts)
+>      -a:  	(optional) alphabet, default 'latin', supports 'cyrillic'.
+>      -stm:	(optional) apply stemming while processing tokens. Supports 'ru' (Russian).
+>      -ptc:	(optional) pre-tokenization replace. to replace certain substrings 
+>              > example: "[('mr.', 'mr'),('mrs.', 'mrs')]" to avoid sentence separation on the dots.
 
 i.e.:
 `python3 preprocess_corpus.py -i data/corpus/ru_books.corpus -o data/csv/ru_books -stm ru `
@@ -40,18 +39,18 @@ I tried out many different approaches, out of which I found one to converge with
 
 After we find the sentence with the maximum average return, we discard that sentence from our sentence list, and we discard every word used in the sentence from our dictionary. We then continue to the next step where we do it all over again with the current sentences and dictionary. 
 
->                     -is: 	*(--input_sentences) input csv file containing sentences
->                     -if: 	*(--input_frequencies) input csv file containing frequencies
->                     -o:  	*(--out) output csv file for sorted sentences
->                     -col:	 (--sentence_column) name of the column containing sentences in the input csv file (default 'sentence')
->                     -sc: 	 (--sentence_count) number of sentences to return, default (-1 for max, 20 default)
->                     -csl:	 (--consider_n_sentences) number of considered sentences in the corpus
->                     -msl:	 (--min_sentence_length) minimum sentence length for consideration
->                     -d:  	 (--dictionary) dictionary file, if not used, translations won't be written
->                          	 expected cols: 'word', 'translation'
->                     -s:  	 (--stemming) stemming language, default none, available: ru
->                     
->                     *: required
+>      -is: 	*(--input_sentences) input csv file containing sentences
+>      -if: 	*(--input_frequencies) input csv file containing frequencies
+>      -o:  	*(--out) output csv file for sorted sentences
+>      -col:	 (--sentence_column) name of the column containing sentences in -is (def. 'sentence')
+>      -sc: 	 (--sentence_count) number of sentences to return, default (-1 for max, 20 default)
+>      -csl:	 (--consider_n_sentences) number of considered sentences in the corpus
+>      -msl:	 (--min_sentence_length) minimum sentence length for consideration
+>      -d:  	 (--dictionary) dictionary file, if not used, translations won't be written
+>           	 expected cols: 'word', 'translation'
+>      -s:  	 (--stemming) stemming language, default none, available: ru
+>      
+>      *: required
 
 i.e.:
 `python3 sort_sentences.py -is data/csv/ru_books.csv -if data/csv/ru_books_freqs.csv -o out/ru_books -sc 1000 -s ru` 
@@ -99,14 +98,14 @@ Let's run `formatter.py` with the following command:
 
 Keep in mind that formatter takes these arguments:
 
->        -i:  	*(--input) input csv file containing sentences
->        -l:  	*(--language) name of the corpus's language
->        -o:  	 (--output) path for formatted output file
->        -f:  	 (--format) output format (default: 'md')
->             	  > available: 'md', 'html'
->             	  > future work: 'latex'
->        
->        *: required
+>     -i:  	*(--input) input csv file containing sentences
+>     -l:  	*(--language) name of the corpus's language
+>     -o:  	 (--output) path for formatted output file
+>     -f:  	 (--format) output format (default: 'md')
+>          	  > available: 'md', 'html'
+>          	  > future work: 'latex'
+>     
+>     *: required
 
 
 

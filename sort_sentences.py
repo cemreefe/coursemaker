@@ -62,7 +62,7 @@ if not (in_path and out_path and freq_path):
     -is: \t*(--input_sentences) input csv file containing sentences
     -if: \t*(--input_frequencies) input csv file containing frequencies
     -o:  \t*(--out) output csv file for sorted sentences
-    -col:\t (--sentence_column) name of the column containing sentences in the input csv file (default 'sentence')
+    -col:\t (--sentence_column) name of the column containing sentences in -is (def. 'sentence')
     -sc: \t (--sentence_count) number of sentences to return, default (-1 for max, 20 default)
     -csl:\t (--consider_n_sentences) number of considered sentences in the corpus
     -msl:\t (--min_sentence_length) minimum sentence length for consideration
