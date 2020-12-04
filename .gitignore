@@ -4,8 +4,10 @@
 *.txt
 
 # omit output courses
-#courses/*
+# courses/*
 
+# omit manually hidden files instead
+*.hide*
 
 # omit notebook checkpoints
 **.ipynb_checkpoints
