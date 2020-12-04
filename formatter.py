@@ -115,23 +115,21 @@ def htmlify_course(pts, language_name=language_name, repo_url=repo_url):
     title         = f"{language_name} Vocab Builder"
     description   = f"This is an automatically generated sentence list to help you build {language_name} vocab. The sentences are introduced in an order to help you learn words starting from the most frequently used. After each sentence you can find the ratio of words you know in the corpus used to generate this content. For more information visit <a href='{repo_url}'>the project repo</a>. If you want to use this generated material feel free to inform me. Cheers!"
 
-    formatted = """
+    formatted = f"""
     <head>
+        <title>{title}</title>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
         <style>
-            body {
+            body {{
                 max-width: 760px;
                 margin: auto;
-            }
-            .percentage {
+            }}
+            .percentage {{
                 list-style-type:none;
-            }
-            .block {
-                /*background-color: blue;*/
-            }
-            @media print {
-               .block {page-break-inside: avoid;}
-            }
+            }}
+            @media print {{
+               .block {{page-break-inside: avoid;}}
+            }}
         </style>
     </head>
     """

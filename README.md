@@ -121,5 +121,11 @@ You can check out [this example md](./courses/russian_course.md), or [this examp
 
 Currently, my first priority will be **sentence translations**. Translations of whole sentences would be a nice addition to this project to provide a more complete learning experience. I'm planning to use the Google Translate workaround method from another project I made a year ago. 
 
+## References
+
+1. [Badestrand/russian-dictionary](https://github.com/Badestrand/russian-dictionary)
+2. [SumUp4U/stemmer](https://github.com/SumUp4U/stemmer)
+3. @thevenuehouse (reddit)
+
 
 
