@@ -21,11 +21,13 @@ The `preprocess_corpus.py`  script extracts sentences from a corpus and saves th
 >                     -o:  	output csv file for sentences
 >                     -s:  	(optional) the starting string for the corpus in the file (to skip through some initial parts)
 >                     -a:  	(optional) alphabet, default 'latin', supports 'cyrillic'.
+>                     -stm:	(optional) apply stemming while processing tokens. Supports 'ru' (Russian).
 >                     -ptc:	(optional) pre-tokenization replace. to replace certain substrings 
->                          	 > example: "[('mr.', 'mr'),('mrs.', 'mrs')]" to avoid sentence separation on the dots.
+>                     > example: "[('mr.', 'mr'),('mrs.', 'mrs')]" to avoid sentence separation on the dots.
+>                     
 
 i.e.:
-`python3 preprocess_corpus.py -i data/corpus/ru_books.corpus -o data/csv/ru_books -ptc "[('mr.','mr'),('mrs.','mrs')]" -s 'the footsteps'`
+`python3 preprocess_corpus.py -i data/corpus/ru_books.corpus -o data/csv/ru_books -stm ru `
 
 ## Sorting the sentences
 
@@ -52,15 +54,27 @@ After we find the sentence with the maximum average return, we discard that sent
 >                     *: required
 
 i.e.:
-`python3 sort_sentences.py -is data/csv/ru_books.csv -if data/csv/ru_books_freqs.csv -o out/ru_books -col sentence -sc 1000` 
+`python3 sort_sentences.py -is data/csv/ru_books.csv -if data/csv/ru_books_freqs.csv -o out/ru_books -sc 1000 -s ru` 
 
-yields 100 best sentences to maximize vocabulary coverage with the minimum number of words learned.
+Yields 100 best sentences to maximize vocabulary coverage with the minimum number of words learned.
 
 ### The results
 
 We have successfully found the best order of sentences to converge with the ideal vocabulary expansion curve.
 
 ![](./media/vcc_comparison.png)
+
+
+
+## Additional options
+
+`CourseMaker` gives the user the opportunity to make use of
+
+1. A stemming script/program to only take into account stems as tokens, to render the vocabulary acquisition process more more useful.
+
+   Currently, stemming support is only available for Russian
+
+2. a CSV dictionary to include meanings of the vocab points in given sentences.
 
 
 
@@ -100,11 +114,13 @@ We will get a page similar to the following, in a printable `html` file.
 
 ![](./media/example_html.png)
 
-You can check out an example output from [this example russian material md](.courses/russian_course.md).
+You can check out an example output from [this example russian material md](./courses/russian_course.md).
+
+
 
 ## Future work
 
-Translations of whole sentences would be a nice addition to this project to provide a more complete learning experience. I'm planning to use the Google Translate workaround method from another project I made a year ago. 
+Currently, my first priority will be **sentence translations**. Translations of whole sentences would be a nice addition to this project to provide a more complete learning experience. I'm planning to use the Google Translate workaround method from another project I made a year ago. 
 
 
 

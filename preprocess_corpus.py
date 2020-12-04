@@ -37,7 +37,7 @@ for i, argument in enumerate(argument_list):
         if token_alphabet == "cyrillic":
             token_regex = "[а-я]+"
             
-    elif argument == "--stemming":
+    elif argument == "-stm" or argument == "--stemming":
         stem = True
         stemming = argument_list[i+1]
         
@@ -48,6 +48,7 @@ if not (path and out_path):
     -o:  \toutput csv file for sentences
     -s:  \t(optional) the starting string for the corpus in the file (to skip through some initial parts)
     -a:  \t(optional) alphabet, default 'latin', supports 'cyrillic'.
+    -stm:\t(optional) apply stemming while processing tokens. Supports 'ru' (Russian).
     -ptc:\t(optional) pre-tokenization replace. to replace certain substrings 
          \t > example: "[('mr.', 'mr'),('mrs.', 'mrs')]" to avoid sentence separation on the dots.
     """)
